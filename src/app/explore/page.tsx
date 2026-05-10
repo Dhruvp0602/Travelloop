@@ -223,7 +223,7 @@ export default function ExplorePage() {
   return (
     <div className="min-h-screen bg-slate-50">
       {/* ── Hero ──────────────────────────────────── */}
-      <div className="relative bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white pt-16 pb-28 overflow-hidden">
+      <div className="relative bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white pt-32 pb-28 overflow-hidden">
         <div className="absolute inset-0 opacity-10 pointer-events-none"
           style={{ backgroundImage: "radial-gradient(circle at 30% 60%, #6366f1, transparent 50%), radial-gradient(circle at 80% 20%, #0ea5e9, transparent 40%)" }} />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">

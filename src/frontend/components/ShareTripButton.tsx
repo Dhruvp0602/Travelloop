@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Share2, Copy, Check, Globe, Lock, X, ExternalLink } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -17,9 +17,14 @@ export default function ShareTripButton({ tripId, initialShareToken, initialIsPu
   const [token, setToken] = useState(initialShareToken);
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
 
-  const shareUrl = typeof window !== "undefined" 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const shareUrl = mounted && typeof window !== "undefined" 
     ? `${window.location.origin}/share/${token}` 
     : "";
 
@@ -41,12 +46,15 @@ export default function ShareTripButton({ tripId, initialShareToken, initialIsPu
   };
 
   const copyToClipboard = () => {
+    if (!shareUrl) return;
     navigator.clipboard.writeText(shareUrl);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => {
+      // Use a local check if still mounted if needed, but for simple toggle it's usually fine
+      setCopied(false);
+    }, 2000);
   };
 
-  // Use createPortal to avoid overflow:hidden issues in parent containers
   const modalContent = isOpen && (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
       <div className="bg-white rounded-3xl w-full max-w-md overflow-hidden shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-200">
@@ -58,7 +66,7 @@ export default function ShareTripButton({ tripId, initialShareToken, initialIsPu
               </div>
               <div>
                 <h3 className="text-xl font-black text-slate-900">Share Trip</h3>
-                <p className="text-xs text-slate-500 font-medium">Manage visibility and share link</p>
+                <p className="text-xs text-slate-600 font-medium">Manage visibility and share link</p>
               </div>
             </div>
             <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors">
@@ -96,7 +104,7 @@ export default function ShareTripButton({ tripId, initialShareToken, initialIsPu
 
             {isPublic && token && (
               <div className="space-y-3">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Shareable Link</label>
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-widest ml-1">Shareable Link</label>
                 <div className="flex gap-2">
                   <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-slate-600 truncate">
                     {shareUrl}
@@ -109,7 +117,7 @@ export default function ShareTripButton({ tripId, initialShareToken, initialIsPu
                   </button>
                 </div>
                 <a 
-                  href={shareUrl} 
+                  href={shareUrl || "#"} 
                   target="_blank" 
                   className="flex items-center justify-center gap-2 text-xs font-bold text-indigo-600 hover:text-indigo-700 transition-colors pt-2"
                 >
@@ -136,12 +144,12 @@ export default function ShareTripButton({ tripId, initialShareToken, initialIsPu
     <>
       <button 
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl font-medium transition-all border border-white/20 text-sm"
+        className="flex items-center gap-2 px-5 py-2.5 glass rounded-2xl text-white text-xs font-black uppercase tracking-widest hover:scale-105 transition-all border-white/10"
       >
         <Share2 size={16} /> Share
       </button>
 
-      {typeof document !== "undefined" && isOpen && createPortal(modalContent, document.body)}
+      {mounted && isOpen && createPortal(modalContent, document.body)}
     </>
   );
 }

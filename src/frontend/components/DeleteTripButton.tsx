@@ -155,10 +155,9 @@ export default function DeleteTripButton({
       {/* Delete Trigger Button */}
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 hover:text-rose-300 backdrop-blur-md rounded-xl font-medium transition-all border border-rose-500/20 text-sm"
+        className="flex items-center gap-2 px-5 py-2.5 glass rounded-2xl text-rose-200 text-xs font-black uppercase tracking-widest hover:scale-105 transition-all border-rose-500/20"
       >
-        <Trash2 size={16} />
-        <span className="hidden sm:inline">Delete Trip</span>
+        <Trash2 size={16} /> Delete
       </button>
 
       {/* Portal Modal — rendered outside overflow-hidden parents */}

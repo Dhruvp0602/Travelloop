@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { Plus, X, Camera, IndianRupee, Calendar as CalendarIcon, Sparkles } from "lucide-react";
+import { Plus, X, Camera, IndianRupee, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface AddActivityButtonProps {
@@ -23,7 +23,12 @@ export default function AddActivityButton({ tripId, stopId, cityName, theme }: A
   const [name, setName] = useState("");
   const [cost, setCost] = useState("");
   const [type, setType] = useState("Sightseeing");
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const activityTypes = [
     { name: "Sightseeing", icon: Camera, color: "text-blue-500", bg: "bg-blue-50" },
@@ -75,7 +80,7 @@ export default function AddActivityButton({ tripId, stopId, cityName, theme }: A
                 </div>
                 <div>
                   <h3 className="text-xl font-black text-slate-900">Add Activity</h3>
-                  <p className="text-xs text-slate-500 font-medium">What's the plan in {cityName}?</p>
+                  <p className="text-xs text-slate-600 font-medium">What's the plan in {cityName}?</p>
                 </div>
               </div>
               <button type="button" onClick={() => setIsOpen(false)} className="p-2 hover:bg-slate-100 rounded-xl transition-colors">
@@ -85,7 +90,7 @@ export default function AddActivityButton({ tripId, stopId, cityName, theme }: A
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Activity Name</label>
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-widest ml-1">Activity Name</label>
                 <div className="relative">
                   <Sparkles className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-400" size={18} />
                   <input
@@ -100,7 +105,7 @@ export default function AddActivityButton({ tripId, stopId, cityName, theme }: A
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Category</label>
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-widest ml-1">Category</label>
                 <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                   {activityTypes.map((t) => (
                     <button
@@ -110,7 +115,7 @@ export default function AddActivityButton({ tripId, stopId, cityName, theme }: A
                       className={`shrink-0 px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                         type === t.name 
                           ? "bg-slate-900 text-white border-slate-900 shadow-lg shadow-slate-200" 
-                          : "bg-white text-slate-500 border-slate-100 hover:border-slate-200"
+                          : "bg-white text-slate-600 border-slate-100 hover:border-slate-200"
                       }`}
                     >
                       {t.name}
@@ -120,9 +125,9 @@ export default function AddActivityButton({ tripId, stopId, cityName, theme }: A
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Estimated Cost</label>
+                <label className="text-xs font-bold text-slate-600 uppercase tracking-widest ml-1">Estimated Cost</label>
                 <div className="relative">
-                  <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-500" size={18} />
+                  <IndianRupee className="absolute left-4 top-1/2 -translate-y-1/2 text-emerald-600" size={18} />
                   <input
                     type="number"
                     placeholder="0.00"
@@ -165,7 +170,7 @@ export default function AddActivityButton({ tripId, stopId, cityName, theme }: A
         <Plus size={14} /> Add Activity
       </button>
 
-      {typeof document !== "undefined" && isOpen && createPortal(modalContent, document.body)}
+      {mounted && isOpen && createPortal(modalContent, document.body)}
     </>
   );
 }

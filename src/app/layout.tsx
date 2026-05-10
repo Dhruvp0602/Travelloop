@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import Navbar from "@/frontend/components/Navbar";
 
-const inter = Inter({ subsets: ["latin"] });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Traveloop - Your Ultimate Trip Planner",
@@ -18,7 +18,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-slate-50 text-slate-900 min-h-screen flex flex-col`}>
+      <body className={`${jakarta.className} bg-slate-50 text-slate-900 min-h-screen flex flex-col antialiased`}>
+        <div className="noise" />
         <Providers>
           <Navbar />
           <main className="flex-grow flex flex-col">{children}</main>

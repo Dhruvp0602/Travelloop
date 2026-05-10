@@ -180,7 +180,7 @@ export default function AddStopForm({
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-md text-sm"
+        className="flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-all shadow-md text-sm"
       >
         <Plus size={16} />
         Add Stop
@@ -290,7 +290,7 @@ export default function AddStopForm({
             <div className="flex flex-wrap gap-2">
               {existingStops.map((s) => (
                 <span key={s.id} className="inline-flex items-center gap-1 text-xs font-semibold bg-white border border-slate-200 text-slate-600 px-2 py-1 rounded-lg">
-                  <MapPin size={10} className="text-indigo-400" />
+                  <MapPin size={10} className="text-indigo-600" />
                   {s.cityName}
                   {s.arrivalDate && s.departureDate && (
                     <span className="text-slate-400 font-normal">
@@ -326,7 +326,7 @@ export default function AddStopForm({
           <button
             type="submit"
             disabled={loading || conflict.hasConflict}
-            className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             {loading ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
             Save Stop

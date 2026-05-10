@@ -38,9 +38,10 @@ export default function AITripSuggestions({
       );
       if (!res.ok) throw new Error("API error");
       const data = await res.json();
+      if (data.error) throw new Error(data.error);
       setSuggestions(data);
-    } catch {
-      setError("Failed to get suggestions. Please try again.");
+    } catch (err: any) {
+      setError(err.message || "Failed to get suggestions. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -62,7 +63,7 @@ export default function AITripSuggestions({
         <div className="flex-1 min-w-0">
           <h3 className="font-black text-slate-900 text-sm">AI Trip Assistant</h3>
           {stops.length > 0 && (
-            <p className="text-xs text-slate-400 truncate mt-0.5">{stopList}</p>
+            <p className="text-xs text-slate-600 truncate mt-0.5">{stopList}</p>
           )}
         </div>
         {suggestions && (
@@ -138,10 +139,10 @@ export default function AITripSuggestions({
               {suggestions.expenseBreakdown?.travelCosts?.length > 0 && (
                 <div className="space-y-2">
                   <div className="flex items-center justify-between cursor-pointer" onClick={() => toggle("travel")}>
-                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                    <span className="text-[11px] font-bold text-slate-600 uppercase tracking-widest flex items-center gap-1.5">
                       <Route size={11} /> Travel Breakdown
                     </span>
-                    {expanded.travel ? <ChevronUp size={14} className="text-slate-400" /> : <ChevronDown size={14} className="text-slate-400" />}
+                    {expanded.travel ? <ChevronUp size={14} className="text-slate-600" /> : <ChevronDown size={14} className="text-slate-600" />}
                   </div>
 
                   {expanded.travel !== false && (
@@ -169,14 +170,14 @@ export default function AITripSuggestions({
               <div className="bg-white rounded-2xl p-3 border border-slate-100 shadow-sm">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Hotel size={13} className="text-violet-500" />
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Hotel</span>
+                  <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wide">Hotel</span>
                 </div>
                 <p className="text-xs font-black text-slate-900">{suggestions.expenseBreakdown?.hotelCostPerNight}</p>
               </div>
               <div className="bg-white rounded-2xl p-3 border border-slate-100 shadow-sm">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Utensils size={13} className="text-amber-500" />
-                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Daily</span>
+                  <span className="text-[10px] font-bold text-slate-700 uppercase tracking-wide">Daily</span>
                 </div>
                 <p className="text-xs font-black text-slate-900">{suggestions.expenseBreakdown?.dailyOtherCost}</p>
               </div>
@@ -199,7 +200,7 @@ export default function AITripSuggestions({
                 {expanded[`stop-${idx}`] !== false && (
                   <div className="p-4 space-y-4">
                     <div>
-                      <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                      <h4 className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
                         <Sparkles size={10} className="text-amber-500" /> Activities
                       </h4>
                       <ul className="space-y-1.5">
@@ -213,14 +214,14 @@ export default function AITripSuggestions({
 
                     {stop.nearbyCities?.length > 0 && (
                       <div className="pt-3 border-t border-slate-50">
-                        <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+                        <h4 className="text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-2 flex items-center gap-1.5">
                           <Navigation size={10} className="text-teal-500" /> Side Trips
                         </h4>
                         <div className="space-y-2">
                           {stop.nearbyCities.map((c: any, ci: number) => (
                             <div key={ci} className="bg-teal-50/50 p-2 rounded-xl">
                               <p className="text-[10px] font-bold text-slate-800">{c.name} ({c.distance})</p>
-                              <p className="text-[9px] text-slate-500 mt-0.5 line-clamp-1">{c.reason}</p>
+                              <p className="text-[9px] text-slate-700 mt-0.5 line-clamp-1">{c.reason}</p>
                             </div>
                           ))}
                         </div>
@@ -251,7 +252,7 @@ export default function AITripSuggestions({
               )}
             </div>
 
-            <p className="text-[10px] text-slate-400 flex items-center gap-1 px-1">
+            <p className="text-[10px] text-slate-600 flex items-center gap-1 px-1">
               <Info size={11} /> AI estimates — actual prices may vary
             </p>
           </div>
