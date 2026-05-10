@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import Groq from "groq-sdk";
 
+export const dynamic = "force-dynamic";
+
 // Initialize Groq client. It will automatically use the GROQ_API_KEY environment variable.
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY || "fallback_key"
@@ -10,6 +12,9 @@ const groq = new Groq({
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
+    const url = new URL(request.url);
+    const homeCity = url.searchParams.get("homeCity") || "Unknown Origin";
+
     const trip = await prisma.trip.findUnique({
       where: { id },
       include: { stops: true }
@@ -21,17 +26,22 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     if (!process.env.GROQ_API_KEY) {
       // Fallback to mock data if no API key is provided
+      const mainCity = trip.stops.length > 0 ? trip.stops[0].cityName : (trip.name || "Paris");
       const mockResponse = {
-        primaryDestination: "Paris",
+        primaryDestination: mainCity,
         nearbyCities: [
-          { name: "Versailles", distance: "45 mins by train", reason: "Famous Palace and Gardens" },
-          { name: "Lyon", distance: "2 hours by high-speed train", reason: "Culinary capital of France" }
+          { name: "A beautiful nearby town", distance: "45 mins away", reason: "Highly recommended for a day trip" },
+          { name: "Another city", distance: "2 hours away", reason: "Great local food and culture" }
         ],
         expenseBreakdown: {
-          flightCost: "₹40,000 - ₹55,000 (from major hubs)",
-          hotelCost: "₹5,000 - ₹12,000 per night"
+          travelCosts: [
+            { route: `${homeCity} to ${mainCity}`, mode: "Flight", estimatedCost: "₹45,000 - ₹60,000" },
+            { route: `${mainCity} to nearby cities`, mode: "Train/Bus", estimatedCost: "₹3,000 - ₹8,000" }
+          ],
+          hotelCostPerNight: "₹5,000 - ₹12,000",
+          dailyOtherCost: "₹3,000 - ₹5,000 (Food & Local Transport)"
         },
-        estimatedCost: "₹45,000 - ₹60,000 (excluding flights)",
+        estimatedCost: "₹65,000 - ₹90,000 (Total Estimate)",
         activities: [
           "Historical city center walking tour",
           "Skip-the-line museum passes",
@@ -50,13 +60,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Build context string from trip details
     const stopsList = trip.stops.map(s => s.cityName).join(", ");
-    const contextStr = `Trip Name: ${trip.name}. Description: ${trip.description || 'None'}. Destinations added so far: ${stopsList || 'Not defined yet'}. Dates: ${trip.startDate.toDateString()} to ${trip.endDate.toDateString()}.`;
+    const contextStr = `Home City/Starting Point: ${homeCity}. Trip Name: ${trip.name}. Destinations added so far: ${stopsList || 'Not defined yet'}. Dates: ${trip.startDate.toDateString()} to ${trip.endDate.toDateString()}.`;
 
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         {
           role: "system",
-          content: "You are an expert travel agent. The user will provide their trip details. You must return a JSON object exactly matching this schema: {\"primaryDestination\": \"string\", \"nearbyCities\": [{\"name\": \"string\", \"distance\": \"string\", \"reason\": \"string\"}], \"expenseBreakdown\": {\"flightCost\": \"string\", \"hotelCost\": \"string\"}, \"estimatedCost\": \"string\", \"activities\": [\"string\", \"string\", \"string\", \"string\"], \"packing\": [\"string\", \"string\", \"string\", \"string\"]}. Do not return any other text, only the raw JSON. Provide the main city being discussed as 'primaryDestination'. Provide 2-3 'nearbyCities' they should consider visiting. Estimate 'flightCost' (assume from India if unspecified) and 'hotelCost' (per night). Make all estimated costs realistic ranges in Indian Rupees (using the ₹ symbol). Provide 4 top contextual activity ideas and 4 smart packing tips."
+          content: "You are an expert travel agent. The user will provide their home city and trip details (stops). You must return a JSON object exactly matching this schema: {\"primaryDestination\": \"string\", \"nearbyCities\": [{\"name\": \"string\", \"distance\": \"string\", \"reason\": \"string\"}], \"expenseBreakdown\": {\"travelCosts\": [{\"route\": \"string (e.g. Home City to Stop 1)\", \"mode\": \"string\", \"estimatedCost\": \"string\"}], \"hotelCostPerNight\": \"string\", \"dailyOtherCost\": \"string\"}, \"estimatedCost\": \"string\", \"activities\": [\"string\"], \"packing\": [\"string\"]}. Calculate travel costs from the Home City to the first stop, and then between subsequent stops. Estimate in Indian Rupees (₹). Make it realistic."
         },
         {
           role: "user",
