@@ -1,19 +1,19 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from "@/backend/lib/auth";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/backend/lib/prisma";
 import Link from "next/link";
 import {
   ArrowLeft, Calendar, MapPin, Plus, Share2, Settings,
   Plane, CreditCard, Box, Clock, Star, Ticket, Camera,
   ChevronRight, Zap, Navigation, Globe
 } from "lucide-react";
-import AITripSuggestions from "@/components/AITripSuggestions";
-import AddStopForm from "@/components/AddStopForm";
-import DeleteTripButton from "@/components/DeleteTripButton";
-import MapView from "@/components/MapView";
-import ShareTripButton from "@/components/ShareTripButton";
-import AddActivityButton from "@/components/AddActivityButton";
+import AITripSuggestions from "@/frontend/components/AITripSuggestions";
+import AddStopForm from "@/frontend/components/AddStopForm";
+import DeleteTripButton from "@/frontend/components/DeleteTripButton";
+import MapView from "@/frontend/components/MapView";
+import ShareTripButton from "@/frontend/components/ShareTripButton";
+import AddActivityButton from "@/frontend/components/AddActivityButton";
 
 // Assign a gradient per stop index for variety
 const stopGradients = [

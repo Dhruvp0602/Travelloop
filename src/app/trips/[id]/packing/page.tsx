@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from "@/backend/lib/auth";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/backend/lib/prisma";
 import Link from "next/link";
 import { ArrowLeft, Box, Plus, CheckCircle2, Circle, Shirt, Cpu, Shield, Pill, Camera, Coffee } from "lucide-react";
 

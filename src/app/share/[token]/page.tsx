@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/backend/lib/prisma";
 import { notFound } from "next/navigation";
 import { Calendar, MapPin, Navigation, Clock, Ticket, Globe, Star, Camera } from "lucide-react";
 import Link from "next/link";

@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from "@/backend/lib/auth";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/backend/lib/prisma";
 import Link from "next/link";
 import { ArrowLeft, CreditCard, Receipt, Wallet, TrendingUp, ShoppingBag, Hotel, Car, Utensils, Ticket, Plus, PiggyBank } from "lucide-react";
-import AddExpenseButton from "@/components/AddExpenseButton";
+import AddExpenseButton from "@/frontend/components/AddExpenseButton";
 
 const categoryConfig: Record<string, { icon: React.ElementType; color: string; bg: string; bar: string }> = {
   "Flights":    { icon: CreditCard,  color: "text-sky-600",    bg: "bg-sky-100",    bar: "bg-sky-500"    },
