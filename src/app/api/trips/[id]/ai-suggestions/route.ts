@@ -60,13 +60,32 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     // Build context string from trip details
     const stopsList = trip.stops.map(s => s.cityName).join(", ");
-    const contextStr = `Home City/Starting Point: ${homeCity}. Trip Name: ${trip.name}. Destinations added so far: ${stopsList || 'Not defined yet'}. Dates: ${trip.startDate.toDateString()} to ${trip.endDate.toDateString()}.`;
+    const contextStr = `Home City: ${homeCity}. Trip Name: ${trip.name}. Stops: ${stopsList || 'None'}. Dates: ${trip.startDate.toDateString()} to ${trip.endDate.toDateString()}.`;
 
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         {
           role: "system",
-          content: "You are an expert travel agent. The user will provide their home city and trip details (stops). You must return a JSON object exactly matching this schema: {\"primaryDestination\": \"string\", \"nearbyCities\": [{\"name\": \"string\", \"distance\": \"string\", \"reason\": \"string\"}], \"expenseBreakdown\": {\"travelCosts\": [{\"route\": \"string (e.g. Home City to Stop 1)\", \"mode\": \"string\", \"estimatedCost\": \"string\"}], \"hotelCostPerNight\": \"string\", \"dailyOtherCost\": \"string\"}, \"estimatedCost\": \"string\", \"activities\": [\"string\"], \"packing\": [\"string\"]}. Calculate travel costs from the Home City to the first stop, and then between subsequent stops. Estimate in Indian Rupees (₹). Make it realistic."
+          content: `You are an expert travel agent. Provide a detailed, realistic travel plan in JSON.
+          Schema: 
+          {
+            "estimatedCost": "₹X - ₹Y",
+            "expenseBreakdown": {
+              "travelCosts": [{"route": "Mumbai to Paris", "mode": "Flight", "estimatedCost": "₹50k"}],
+              "hotelCostPerNight": "₹10k",
+              "dailyOtherCost": "₹5k"
+            },
+            "stops": [
+              {
+                "cityName": "Paris",
+                "activities": ["Visit Eiffel Tower", "Louvre Museum"],
+                "nearbyCities": [{"name": "Versailles", "distance": "30m", "reason": "Palace"}]
+              }
+            ],
+            "packing": ["Universal Adapter", "Walking Shoes"]
+          }
+          Calculate travel costs from Home City to first stop, then between all stops. 
+          Provide 3-4 specific activities and 2 nearby side-trips for EACH stop.`
         },
         {
           role: "user",
@@ -74,8 +93,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
         }
       ],
       model: "llama3-8b-8192",
-      temperature: 0.7,
-      max_completion_tokens: 1024,
+      temperature: 0.6,
       response_format: { type: "json_object" }
     });
 

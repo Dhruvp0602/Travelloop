@@ -12,6 +12,8 @@ import AITripSuggestions from "@/components/AITripSuggestions";
 import AddStopForm from "@/components/AddStopForm";
 import DeleteTripButton from "@/components/DeleteTripButton";
 import MapView from "@/components/MapView";
+import ShareTripButton from "@/components/ShareTripButton";
+import AddActivityButton from "@/components/AddActivityButton";
 
 // Assign a gradient per stop index for variety
 const stopGradients = [
@@ -100,9 +102,11 @@ export default async function TripDetailsPage({ params }: { params: Promise<{ id
           </div>
 
           <div className="flex gap-3 mt-8">
-            <button className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl font-medium transition-all border border-white/20 text-sm">
-              <Share2 size={16} /> Share
-            </button>
+            <ShareTripButton 
+              tripId={trip.id} 
+              initialShareToken={trip.shareToken} 
+              initialIsPublic={trip.isPublic} 
+            />
             <button className="flex items-center gap-2 px-4 py-2 bg-white text-slate-900 hover:bg-slate-100 rounded-xl font-bold transition-all shadow-lg text-sm">
               <Settings size={16} /> Settings
             </button>
@@ -264,9 +268,12 @@ export default async function TripDetailsPage({ params }: { params: Promise<{ id
                                 </div>
                               )}
 
-                              <button className={`w-full mt-3 py-2.5 border-2 border-dashed ${theme.border} ${theme.text} text-xs font-bold rounded-2xl hover:${theme.light} transition-colors flex items-center justify-center gap-1.5`}>
-                                <Plus size={14} /> Add Activity
-                              </button>
+                              <AddActivityButton 
+                                tripId={trip.id} 
+                                stopId={stop.id} 
+                                cityName={stop.cityName}
+                                theme={theme}
+                              />
                             </div>
                           </div>
                         </div>
